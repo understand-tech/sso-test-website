@@ -17,12 +17,10 @@ This repository is a reference implementation of a **parent website** that embed
 5. Frontend posts the OTT into the widget iframe; the widget exchanges it for its own secure session cookie.
 6. Widget is now fully authenticated and ready for chat or other assistant experiences.
 
-For a deeper dive into the architecture and sequence diagrams, see the guides listed below.
 
 ## Documentation Map
 
 - `SETUP.md` – Install, configure Azure AD, and run both services locally.
-- `QUICKSTART.md` – TL;DR for getting Microsoft SSO + widget OTT exchange working.
 - `WIDGET_INTEGRATION_TEST.md` – Manual test script and troubleshooting checklist.
 - `backend/README.md` – Backend-only instructions, environment variables, and API reference.
 
