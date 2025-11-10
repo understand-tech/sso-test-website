@@ -215,21 +215,4 @@ widget-sso/
 - Frontend is a SPA with React Router
 - Sessions are stored in-memory (use Redis or database for production)
 
-## Production Deployment
-
-For production:
-1. Use proper session storage (Redis, database)
-2. Set secure session secrets
-3. Update CORS origins to production domains
-4. Use HTTPS for all endpoints
-5. Update Microsoft OAuth redirect URIs to production URLs
-6. Enable secure cookies in production
-
-## Next Steps
-
-- Configure your Widget API Key when ready
-- Customize the UI to match your brand
-- Add error handling and user feedback
-- Implement session persistence with Redis/database
-- Add logging and monitoring
 

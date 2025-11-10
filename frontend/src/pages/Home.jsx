@@ -16,14 +16,11 @@ function Home({ user, onLogout }) {
     const fetchAndSendOTT = async () => {
       // Prevent duplicate OTT requests
       if (ottSentRef.current) {
-        console.log('⏭️ [FRONTEND] OTT already sent, skipping duplicate request')
         return
       }
       
       ottSentRef.current = true // Mark as in-progress
-      console.log('\n' + '='.repeat(80))
       console.log('🚀 [FRONTEND] Starting Widget OTT Exchange Flow')
-      console.log('='.repeat(80))
       
       try {
         // Fetch OTT from parent backend
@@ -33,9 +30,6 @@ function Home({ user, onLogout }) {
         }
         
         console.log('📤 [FRONTEND] Requesting OTT from backend')
-        console.log(`   - URL: ${API_BASE_URL}/widget/get-ott`)
-        console.log(`   - model_id: ${MODEL_ID}`)
-        console.log(`   - origin: ${window.location.origin}`)
         
         const response = await fetch(`${API_BASE_URL}/widget/get-ott`, {
           method: 'POST',
@@ -43,8 +37,6 @@ function Home({ user, onLogout }) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(requestBody),
         })
-
-        console.log(`📥 [FRONTEND] Backend response: ${response.status} ${response.statusText}`)
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({ detail: 'Failed to get OTT' }))
@@ -56,8 +48,6 @@ function Home({ user, onLogout }) {
         const ottPreview = data.ott?.substring(0, 30) + '...' || 'None'
         
         console.log('✅ [FRONTEND] OTT received successfully')
-        console.log(`   - OTT (preview): ${ottPreview}`)
-        console.log(`   - Expires in: ${data.expires_in} seconds`)
         
         // Send OTT to iframe via postMessage
         if (iframeRef.current?.contentWindow) {
@@ -65,16 +55,10 @@ function Home({ user, onLogout }) {
           const targetOrigin = new URL(WIDGET_URL).origin
           
           console.log('\n📨 [FRONTEND] Sending OTT to widget iframe')
-          console.log(`   - Target origin: ${targetOrigin}`)
-          console.log(`   - Message type: ${message.type}`)
-          console.log(`   - OTT (preview): ${ottPreview}`)
           
           iframeRef.current.contentWindow.postMessage(message, targetOrigin)
           
           console.log('✅ [FRONTEND] OTT sent to iframe via postMessage')
-          console.log('⏳ [FRONTEND] Waiting for widget to exchange OTT...')
-          console.log('   (Widget will call UT API /widget/exchange-ott)')
-          console.log('='.repeat(80) + '\n')
           
           setWidgetReady(true)
         } else {
@@ -86,21 +70,18 @@ function Home({ user, onLogout }) {
         console.error('❌ [FRONTEND] OTT exchange flow failed:', error)
         console.log('='.repeat(80) + '\n')
         setWidgetError(error.message)
-        ottSentRef.current = false // Reset on error so user can retry
+        ottSentRef.current = false
       }
     }
 
     // Wait for iframe to load before sending OTT
     const iframe = iframeRef.current
     if (iframe) {
-      console.log('🖼️ [FRONTEND] Widget iframe element found, setting up onload handler')
-      console.log(`   - Widget URL: ${WIDGET_URL}`)
       
       iframe.onload = () => {
         console.log('✅ [FRONTEND] Widget iframe loaded successfully')
         console.log('⏱️ [FRONTEND] Waiting 500ms for iframe to initialize...')
         
-        // Give the iframe a moment to set up message listeners
         setTimeout(() => {
           console.log('▶️ [FRONTEND] Starting OTT fetch...')
           fetchAndSendOTT()
@@ -116,7 +97,6 @@ function Home({ user, onLogout }) {
       
       // Validate origin for security
       if (event.origin !== eventOrigin) {
-        console.log(`🔒 [FRONTEND] Ignoring message from unauthorized origin: ${event.origin}`)
         return
       }
 

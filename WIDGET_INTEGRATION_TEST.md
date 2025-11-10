@@ -14,8 +14,8 @@ Before testing, ensure you have:
    - `FRONTEND_URL`: Your frontend URL (e.g., `http://localhost:5173`)
 
 2. **Frontend configuration** in `src/pages/Home.jsx`:
-   - `WIDGET_URL`: Set to your widget domain (default: `https://app.understand.tech`)
-   - `MODEL_ID`: Your assistant's model ID (default: `Ydol Chatbot`)
+   - `WIDGET_URL`: Set to your widget URL copied from Understand Tech
+   - `MODEL_ID`: Your assistant's model ID (from the URL)
 
 3. **Both servers running**:
    - Backend: `http://localhost:8000`
@@ -92,10 +92,6 @@ The widget iframe (Understand Tech's code) should:
 
 **Expected Result**: ✅ Widget iframe has session cookie and is authenticated
 
-**Debug**:
-- Open browser DevTools → Application → Cookies
-- Look for `ut_session` cookie under widget domain
-- Should be `HttpOnly`, `Secure` (if HTTPS), `SameSite=None`, `Partitioned`
 
 ### Step 5: Widget Ready for Chat
 
@@ -162,58 +158,6 @@ The widget should now:
 - Verify cookie has `Partitioned` attribute for iframe context
 - Check for cookie warnings in browser console
 
-## Testing Checklist
-
-- [ ] Backend starts without errors
-- [ ] Frontend starts without errors
-- [ ] Microsoft SSO login works
-- [ ] User redirected to /home after login
-- [ ] Widget iframe loads (visible in page)
-- [ ] Backend `/widget/get-ott` returns 200 with OTT
-- [ ] postMessage sent to iframe (check console)
-- [ ] No errors in browser console
-- [ ] `ut_session` cookie appears in DevTools
-- [ ] Widget shows chat interface (not login)
-- [ ] Widget accepts and responds to messages
-
-## Security Verification
-
-Verify these security measures are working:
-
-1. **Widget API Key never exposed**:
-   - Check browser DevTools → Network tab
-   - Widget API Key should NEVER appear in any request/response
-   - Only appears in backend code and .env
-
-2. **OTT is single-use**:
-   - Try to reuse an OTT (replay attack)
-   - Second use should fail with error
-
-3. **OTT expires**:
-   - Wait 61+ seconds after OTT issued
-   - Attempt to exchange expired OTT
-   - Should fail with expiry error
-
-4. **Origin validation**:
-   - Try to use OTT from different origin
-   - Should fail with origin mismatch error
-
-5. **Session cookie is HttpOnly**:
-   - Try to access `ut_session` cookie via JavaScript
-   - Should be inaccessible (undefined)
-
-## Success Criteria
-
-The integration is successful when:
-
-1. ✅ User can login via Microsoft SSO
-2. ✅ Widget iframe loads on home page
-3. ✅ OTT is automatically fetched and sent to iframe
-4. ✅ Widget receives OTT and exchanges it for session cookie
-5. ✅ Widget displays chat interface (authenticated)
-6. ✅ Widget can send/receive chat messages
-7. ✅ No errors in browser console or backend logs
-8. ✅ All security measures verified
 
 ## Performance Notes
 
@@ -221,13 +165,4 @@ The integration is successful when:
 - Widget should be ready for chat within 3 seconds of page load
 - No visible delays or loading states after initial page load
 
-## Next Steps After Successful Testing
-
-1. Test with different assistants/model IDs
-2. Test origin allowlist restrictions
-3. Test session expiry and refresh flows
-4. Deploy to staging environment
-5. Test with production UT API endpoint
-6. Conduct security audit
-7. Load test with multiple concurrent users
 
